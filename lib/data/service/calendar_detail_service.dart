@@ -1,10 +1,10 @@
-import 'package:lunar/lunar.dart';
+import 'package:vnlunar/vnlunar.dart';
 import '../../core/utils/tet_utils.dart';
 import '../models/calendar_day.dart';
 import '../models/event.dart';
 
 class CalendarDetailService {
-  ///danh sách ngày cho bảng lịch dựa trên tháng và năm được chọn
+  /// Danh sách ngày cho bảng lịch dựa trên tháng và năm được chọn
   List<CalendarDay?> getCalendarDays(int year, int month) {
     List<CalendarDay?> daysList = [];
     DateTime firstDay = DateTime(year, month, 1);
@@ -19,65 +19,92 @@ class CalendarDetailService {
     // 2. Tạo danh sách CalendarDay
     for (int i = 1; i <= lastDay.day; i++) {
       DateTime currentDate = DateTime(year, month, i);
-      Solar solar = Solar.fromYmd(year, month, i);
-      Lunar lunar = solar.getLunar();
+
+      // vnlunar trả về [lunarDay, lunarMonth, lunarYear, isLeap]
+      List<dynamic> lunarData = convertSolar2Lunar(i, month, year, 7);
+      int lDay = lunarData[0];
+      int lMonth = lunarData[1];
+      int lYear = lunarData[2];
 
       daysList.add(
         CalendarDay(
           weekday: _getWeekdayName(currentDate.weekday),
           solarDay: i,
-          lunarDay: lunar.getDay(),
-          lunarMonth: lunar.getMonth(),
-          canchiYear: TetUtils.getCanChiYear(lunar),
+          lunarDay: lDay,
+          lunarMonth: lMonth,
+          canchiYear: TetUtils.getCanChiYear(lYear),
           isToday: _isToday(year, month, i),
-          event: _getSpecialEvent(lunar, currentDate),
+          event: _getSpecialEvent(lDay, lMonth, lYear, currentDate),
         ),
       );
     }
     return daysList;
   }
 
-  Event? _getSpecialEvent(Lunar lunar, DateTime currentDate) {
+  Event? _getSpecialEvent(
+    int lDay,
+    int lMonth,
+    int lYear,
+    DateTime currentDate,
+  ) {
     String? eventTitle;
 
-    //Xác định tiêu đề sự kiện
-    if (lunar.getDay() == 23 && lunar.getMonth() == 12) {
-      eventTitle = "Ông Công Ông Táo";
-    }
-    else {
-      DateTime newYearEve = TetUtils.getLunarNewYearEve(currentDate.year);
-      if (currentDate.day == newYearEve.day && currentDate.month == newYearEve.month) {
-        eventTitle = "Đêm Giao Thừa";
-      }
-      else if (lunar.getDay() == 1 && lunar.getMonth() == 1) {
+    // 1. Nhóm tháng Giêng (Tết)
+    if (lMonth == 1) {
+      if (lDay == 1) {
         eventTitle = "Tết Nguyên Đán";
-      }
-      else if (lunar.getDay() == 2 && lunar.getMonth() == 1) {
+      } else if (lDay == 2) {
         eventTitle = "Mùng 2 Tết";
-      }
-      else if (lunar.getDay() == 3 && lunar.getMonth() == 1) {
+      } else if (lDay == 3) {
         eventTitle = "Mùng 3 Tết";
+      }
+
+    }
+    // 2. Nhóm tháng Chạp (Cuối năm)
+    else if (lMonth == 12) {
+      if (lDay == 23) {
+        eventTitle = "Ông Công Ông Táo";
+      }
+      // Kiểm tra Giao thừa: Chỉ check khi lDay từ 29 trở đi để tối ưu
+      else if (lDay >= 29) {
+        DateTime tomorrow = currentDate.add(const Duration(days: 1));
+        List lunarTomorrow = convertSolar2Lunar(
+          tomorrow.day,
+          tomorrow.month,
+          tomorrow.year,
+          7,
+        );
+
+        if (lunarTomorrow[0] == 1 && lunarTomorrow[1] == 1) {
+          eventTitle = "Đêm Giao Thừa";
+        }
       }
     }
 
-    //Nếu tìm thấy sự kiện
     if (eventTitle != null) {
       return Event(
         title: eventTitle,
         solarDay: currentDate.day,
         solarMonth: currentDate.month,
         solarYear: currentDate.year,
-        lunarDay: lunar.getDay(),
-        lunarMonth: lunar.getMonth().abs(),
-        lunarYear: lunar.getYear(),
+        lunarDay: lDay,
+        lunarMonth: lMonth,
+        lunarYear: lYear,
       );
     }
-
-    return null; // Không có sự kiện
+    return null;
   }
 
   String _getWeekdayName(int weekday) {
-    List<String> weekdays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"];
+    List<String> weekdays = [
+      "Thứ 2",
+      "Thứ 3",
+      "Thứ 4",
+      "Thứ 5",
+      "Thứ 6",
+      "Thứ 7",
+      "Chủ Nhật",
+    ];
     return weekdays[weekday - 1];
   }
 
@@ -86,42 +113,68 @@ class CalendarDetailService {
     return day == now.day && month == now.month && year == now.year;
   }
 
+  /// Lấy danh sách các sự kiện Tết quan trọng của một năm âm lịch
   List<Event> getLunarNewYearEvents(int year) {
     List<Event> tetEvents = [];
 
-    // 1. Tính ngày Ông Táo (23 tháng Chạp năm trước)
-    Lunar taoQuanLunar = Lunar.fromYmd(year - 1, 12, 23);
-    Solar taoQuanSolar = taoQuanLunar.getSolar();
-    DateTime taoQuanDateTime = DateTime(taoQuanSolar.getYear(), taoQuanSolar.getMonth(), taoQuanSolar.getDay());
+    // 1. Tính ngày Ông Táo (23 tháng Chạp năm trước đó)
+    List<int> taoQuanSolarList = convertLunar2Solar(23, 12, year - 1, false, 7);
+    DateTime taoQuanDateTime = DateTime(
+      taoQuanSolarList[2],
+      taoQuanSolarList[1],
+      taoQuanSolarList[0],
+    );
 
-    // 2. Lấy ngày Giao Thừa từ TetUtils
-    DateTime giaoThuaDateTime = TetUtils.getLunarNewYearEve(year);
+    // 2. Lấy mốc Mùng 1 Tết (Do TetUtils.getLunarNewYearEve của bạn trả về 0h00 Mùng 1)
+    DateTime mung1DateTime = TetUtils.getLunarNewYearEve(year);
 
-    // 3. Thêm các sự kiện
+    // 3. Tính ngày Giao Thừa bằng cách lùi lại 1 ngày từ mốc Mùng 1
+    DateTime giaoThuaDate = mung1DateTime.subtract(const Duration(days: 1));
+
+    // 4. Thêm các sự kiện vào list dựa trên mốc đã xác định lại
     _addEvent(tetEvents, "Ông Công Ông Táo", taoQuanDateTime);
-    _addEvent(tetEvents, "Đêm Giao Thừa", giaoThuaDateTime);
-    _addEvent(tetEvents, "Tết Nguyên Đán", giaoThuaDateTime.add(const Duration(days: 1)));
-    _addEvent(tetEvents, "Mùng 2 Tết", giaoThuaDateTime.add(const Duration(days: 2)));
-    _addEvent(tetEvents, "Mùng 3 Tết", giaoThuaDateTime.add(const Duration(days: 3)));
+
+    // Ngày hiển thị chữ "Đêm Giao Thừa"
+    _addEvent(tetEvents, "Đêm Giao Thừa", giaoThuaDate);
+
+    // Ngày hiển thị "Tết Nguyên Đán" (Chính là mốc 0h00 bạn đã lấy)
+    _addEvent(tetEvents, "Tết Nguyên Đán", mung1DateTime);
+
+    // Mùng 2 = Mùng 1 + 1 ngày
+    _addEvent(
+      tetEvents,
+      "Mùng 2 Tết",
+      mung1DateTime.add(const Duration(days: 1)),
+    );
+
+    // Mùng 3 = Mùng 1 + 2 ngày
+    _addEvent(
+      tetEvents,
+      "Mùng 3 Tết",
+      mung1DateTime.add(const Duration(days: 2)),
+    );
 
     return tetEvents;
   }
 
   void _addEvent(List<Event> list, String title, DateTime solarDate) {
-    Solar solar = Solar.fromYmd(solarDate.year, solarDate.month, solarDate.day);
-    Lunar lunar = solar.getLunar();
+    List<dynamic> lunarData = convertSolar2Lunar(
+      solarDate.day,
+      solarDate.month,
+      solarDate.year,
+      7,
+    );
 
-    list.add(Event(
-      title: title,
-      solarDay: solarDate.day,
-      solarMonth: solarDate.month,
-      solarYear: solarDate.year,
-      lunarDay: lunar.getDay(),
-      lunarMonth: lunar.getMonth().abs(),
-      lunarYear: lunar.getYear(),
-    ));
+    list.add(
+      Event(
+        title: title,
+        solarDay: solarDate.day,
+        solarMonth: solarDate.month,
+        solarYear: solarDate.year,
+        lunarDay: lunarData[0],
+        lunarMonth: lunarData[1],
+        lunarYear: lunarData[2],
+      ),
+    );
   }
-
-
-
 }

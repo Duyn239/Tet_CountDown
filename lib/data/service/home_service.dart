@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:lunar/lunar.dart';
+import 'package:vnlunar/vnlunar.dart'; // Đã đổi sang vnlunar
 import '../models/calendar_day.dart';
 import '../../core/utils/tet_utils.dart';
 
@@ -14,38 +14,46 @@ class HomeService {
     return {
       "days": difference.inDays.toString().padLeft(2, '0'),
       "hours": (difference.inHours % 24).toString().padLeft(2, '0'),
-      // 7 ngày 13 giờ = 7*24 + 13 = 181 giờ => 181 % 24 = 13 giờ
       "minutes": (difference.inMinutes % 60).toString().padLeft(2, '0'),
       "seconds": (difference.inSeconds % 60).toString().padLeft(2, '0'),
     };
   }
 
-  /// Tính toán danh sách ngày trong tháng
-  List<CalendarDay?> getCalendarDays(DateTime now) {
-    DateTime firstDayOfMonth = DateTime(now.year, now.month, 1);
-    DateTime lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+  /// Tính toán danh sách ngày trong tháng chuẩn lịch Việt Nam
+  List<CalendarDay?> getCalendarDays(DateTime displayedMonth) {
+    // displayedMonth là tháng đang hiển thị trên lịch, không nhất thiết là "now"
+    DateTime firstDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month, 1);
+    DateTime lastDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month + 1, 0);
+    DateTime today = DateTime.now();
 
     List<CalendarDay?> daysList = [];
 
-    // 1. Padding các ô trống đầu tháng
+    // 1. Padding các ô trống đầu tháng (Thứ 2 là 1, Chủ nhật là 7)
+    // Nếu muốn bắt đầu tuần từ Thứ 2:
     int leadingEmptyDays = firstDayOfMonth.weekday - 1;
     for (int i = 0; i < leadingEmptyDays; i++) {
       daysList.add(null);
     }
 
-    // 2. Tạo danh sách CalendarDay
+    // 2. Tạo danh sách CalendarDay bằng vnlunar
     for (int i = 1; i <= lastDayOfMonth.day; i++) {
-      DateTime date = DateTime(now.year, now.month, i);
-      Solar solar = Solar.fromYmd(date.year, date.month, date.day);
-      Lunar lunar = solar.getLunar();
+      // convertSolar2Lunar trả về [lunarDay, lunarMonth, lunarYear, isLeap]
+      List<dynamic> lunarData = convertSolar2Lunar(
+          i,
+          displayedMonth.month,
+          displayedMonth.year,
+          7
+      );
 
       daysList.add(CalendarDay(
-        weekday: "",
+        weekday: "", // Có thể bổ sung nếu UI cần
         solarDay: i,
-        lunarDay: lunar.getDay(),
-        lunarMonth: lunar.getMonth().abs(),
-        canchiYear: "",
-        isToday: (i == now.day && now.month == date.month && now.year == date.year),
+        lunarDay: lunarData[0], // lunarDay
+        lunarMonth: lunarData[1], // lunarMonth
+        canchiYear: TetUtils.getCanChiYear(lunarData[2]), // Lấy can chi từ năm âm lịch
+        isToday: (i == today.day &&
+            displayedMonth.month == today.month &&
+            displayedMonth.year == today.year),
         event: null,
       ));
     }

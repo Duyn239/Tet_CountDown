@@ -1,56 +1,52 @@
-import 'package:lunar/lunar.dart';
+import 'package:vnlunar/vnlunar.dart';
 
 class TetUtils {
-  /// Hàm tìm ngày Dương lịch của đêm Giao thừa (30 Tết)
+  /// Hàm tìm ngày Dương lịch của đêm Giao thừa (29 hoặc 30 Tết)
   static DateTime getLunarNewYearEve(int year) {
-    //Tìm ngày mùng 1 Tết của năm đó
-    Lunar m1TetLunar = Lunar.fromYmd(year, 1, 1); // lịch âm 1/1/2026
+    // 1. Tìm mùng 1 Tết
+    List<int> solarList = convertLunar2Solar(1, 1, year, false, 7);
 
-    //Chuyển sang Dương lịch
-    Solar m1TetSolar = m1TetLunar.getSolar(); // chuyển sang lịch dương: 17/02/2026
-
-    // m1DateTime đang được khởi tạo mặc định là 00:00:00
-    DateTime m1DateTime = DateTime(
-    m1TetSolar.getYear(),
-    m1TetSolar.getMonth(),
-    m1TetSolar.getDay(),
+    // 2. Thiết lập mục tiêu là ĐÚNG 0h00 ngày Mùng 1
+    // Đây chính là thời điểm kết thúc đêm Giao thừa
+    return DateTime(
+        solarList[2], // Năm
+        solarList[1], // Tháng
+        solarList[0], // Ngày
+        0, 0, 0       // Giờ, Phút, Giây
     );
-
-    //Giao thừa là ngày trước mùng 1
-    return m1DateTime.subtract(const Duration(days: 1));
   }
 
   /// Tự động nhảy sang năm sau nếu đã qua Tết năm nay
   static DateTime getNextTetDestination() {
     DateTime now = DateTime.now();
-    DateTime currentYearEve = getLunarNewYearEve(now.year);
 
-    /// sẽ xử lí thêm khi làm tới phần demo countdown
-    // Nếu bây giờ đã muộn hơn giao thừa năm nay ( so sánh cả ngày + thời gian) --> tính giao thừa năm sau
+    // Bước 1: Lấy năm âm lịch của ngày hôm nay
+    // convertSolar2Lunar trả về List<dynamic> vì phần tử cuối là bool
+    List<dynamic> currentLunar = convertSolar2Lunar(now.day, now.month, now.year, 7);
+    int currentLunarYear = currentLunar[2];
+
+    // Bước 2: Lấy ngày Giao thừa của năm âm lịch hiện tại
+    DateTime currentYearEve = getLunarNewYearEve(currentLunarYear);
+
+    // Bước 3: So sánh
+    // Nếu hôm nay đã qua Giao thừa năm nay -> Tìm Giao thừa năm âm lịch kế tiếp
     if (now.isAfter(currentYearEve)) {
-      return getLunarNewYearEve(now.year + 1);
+      return getLunarNewYearEve(currentLunarYear + 1);
     }
+
     return currentYearEve;
   }
 
-  static String getCanChiYear(Lunar lunarDay) {
-    const canList = [
-      "Giáp", "Ất", "Bính", "Đinh", "Mậu",
-      "Kỷ", "Canh", "Tân", "Nhâm", "Quý"
-    ];
+  /// Lấy Can Chi của năm từ năm âm lịch (lunarYear)
+  static String getCanChiYear(int lunarYear) {
+    // Thuật toán: Can = (năm - 4) % 10, Chi = (năm - 4) % 12
+    // Với mảng bắt đầu từ Canh (0) và Thân (0) như dưới đây thì logic % là chuẩn
+    const canList = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"];
+    const chiList = ["Thân", "Dậu", "Tuất", "Hợi", "Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi"];
 
-    const chiList = [
-      "Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ",
-      "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"
-    ];
-
-    int year = lunarDay.getYear();
-
-    // 1984 (Giap ty)
-    final can = canList[(year + 6) % 10];
-    final chi = chiList[(year + 8) % 12];
+    final can = canList[lunarYear % 10];
+    final chi = chiList[lunarYear % 12];
 
     return "$can $chi";
   }
-
 }
