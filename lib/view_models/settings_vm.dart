@@ -6,11 +6,8 @@ class SettingsViewModel extends ChangeNotifier {
   final SettingsService _settingsService = SettingsService();
 
   // 1. TRẠNG THÁI UI & CẤU HÌNH BẬT/TẮT
-  bool isReminderOn = true;
   bool isDemoCountdownOn = false;
-  bool isDemoReminderOn = false;
   bool isEditingCountdown = false;
-  bool isEditingReminder = false;
 
   // 12 con giáp
   int selectedZodiacIndex = 0; // Mặc định là Tý (0)
@@ -28,11 +25,11 @@ class SettingsViewModel extends ChangeNotifier {
 
   Future<void> _init() async {
     final data = await _settingsService.loadSettings();
-    isReminderOn = data['isReminderOn'] ?? true;
-    isDemoCountdownOn = data['isDemoCountdownOn'] ?? false;
-    isDemoReminderOn = data['isDemoReminderOn'] ?? false;
 
-    // Load dữ liệu đã lưu vào cả Draft và Confirmed để đồng bộ lúc khởi tạo
+    // 1. Load trạng thái switch trước
+    isDemoCountdownOn = data['isDemoCountdownOn'] ?? false;
+
+    // 2. Load dữ liệu thời gian
     if (data['demoDate'] != null && data['demoTime'] != null) {
       final date = DateTime.parse(data['demoDate']);
       final parts = data['demoTime'].split(':');
@@ -41,11 +38,14 @@ class SettingsViewModel extends ChangeNotifier {
       draftDate = date;
       draftTime = time;
 
-      // Xác nhận dữ liệu chính thức
-      _confirmedDateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+      // CHỈ GÁN confirmed nếu switch đang BẬT
+      if (isDemoCountdownOn) {
+        _confirmedDateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+      } else {
+        _confirmedDateTime = null; // Đảm bảo trả về Tết thật
+      }
     }
 
-    // 2. TẢI INDEX CON GIÁP ĐÃ LƯU
     selectedZodiacIndex = await _settingsService.loadZodiacIndex();
     notifyListeners();
   }
@@ -77,26 +77,24 @@ class SettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setEditingReminder(bool val) {
-    isEditingReminder = val;
-    notifyListeners();
-  }
-
-  // Chuyển đổi Switch
-  void toggleReminder(bool val) {
-    isReminderOn = val;
-    notifyListeners();
-  }
-
-  void toggleDemoCountdown(bool val) {
+  void toggleDemoCountdown(bool val) async {
     isDemoCountdownOn = val;
-    if (val) isEditingCountdown = true; // Hiện form khi bật
-    notifyListeners();
-  }
 
-  void toggleDemoReminder(bool val) {
-    isDemoReminderOn = val;
-    if (val) isEditingReminder = true;
+    if (val) {
+      isEditingCountdown = true;
+    } else {
+      _confirmedDateTime = null;
+      isEditingCountdown = false;
+
+      // QUAN TRỌNG: Phải lưu ngay trạng thái OFF này xuống máy
+      // Nếu không lưu, khi khởi động lại nó sẽ lấy giá trị cũ trong Prefs
+      await _settingsService.saveSettings(
+        isDemoCountdownOn: false,
+        demoDate: draftDate,
+        demoTime: draftTime,
+      );
+    }
+
     notifyListeners();
   }
 
@@ -113,9 +111,7 @@ class SettingsViewModel extends ChangeNotifier {
 
     // 2. Gửi dữ liệu xuống Service để lưu vào Database/Prefs
     await _settingsService.saveSettings(
-      isReminderOn: isReminderOn,
       isDemoCountdownOn: isDemoCountdownOn,
-      isDemoReminderOn: isDemoReminderOn,
       demoDate: draftDate,
       demoTime: draftTime,
     );
@@ -127,11 +123,8 @@ class SettingsViewModel extends ChangeNotifier {
 
   Future<void> resetToDefault() async {
     await _settingsService.clearSettings();
-    isReminderOn = true;
     isDemoCountdownOn = false;
-    isDemoReminderOn = false;
     isEditingCountdown = false;
-    isEditingReminder = false;
     draftDate = DateTime(2026, 3, 08);
     draftTime = const TimeOfDay(hour: 0, minute: 0);
     _confirmedDateTime = null;

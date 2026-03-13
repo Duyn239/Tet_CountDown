@@ -10,7 +10,8 @@ import '../data/service/home_service.dart';
 class HomeViewModel extends ChangeNotifier {
   final HomeService _homeService = HomeService();
   final SettingsViewModel settingsVM;
-  final AudioPlayer _audioPlayer = AudioPlayer(); // Khởi tạo player
+  final AudioPlayer _audioPlayer = AudioPlayer(); // tiếng HPNY
+  final AudioPlayer _fireworkPlayer = AudioPlayer(); // Cho tiếng pháo hoa
   Timer? _timer;
 
   String days = "00", hours = "00", minutes = "00", seconds = "00";
@@ -44,7 +45,6 @@ class HomeViewModel extends ChangeNotifier {
     final now = DateTime.now();
     final target = settingsVM.effectiveTargetDate;
 
-    // 1. Gọi service tính toán như bình thường
     final data = _homeService.calculateCountdown(now, target);
     days = data["days"]!;
     hours = data["hours"]!;
@@ -63,7 +63,8 @@ class HomeViewModel extends ChangeNotifier {
       // Nếu chưa tới hoặc user chỉnh lại ngày demo về tương lai
       if (isCelebrationMode) {
         isCelebrationMode = false;
-        _audioPlayer.stop(); // Tắt nhạc nếu không còn ở chế độ ăn mừng
+        _audioPlayer.stop();
+        _fireworkPlayer.stop();
       }
     }
 
@@ -73,9 +74,11 @@ class HomeViewModel extends ChangeNotifier {
 
   void _playNewYearMusic() async {
     try {
-      // Đảm bảo tốc độ phát luôn là 1.0
-      await _audioPlayer.setPlaybackRate(1.0);
-      await _audioPlayer.setVolume(1.0); // 1.0 là mức to nhất (100%)
+      await _fireworkPlayer.setVolume(1.0); // Tiếng pháo nhỏ hơn nhạc một chút cho đỡ chói
+      await _fireworkPlayer.play(AssetSource('sounds/phao_hoa_sound.mp3'));
+
+      // Phát nhạc Happy New Year
+      await _audioPlayer.setVolume(1.0);
       await _audioPlayer.play(AssetSource('sounds/HappyNewYearCut.mp3'));
     } catch (e) {
       debugPrint("Lỗi âm thanh: $e");
@@ -131,7 +134,8 @@ class HomeViewModel extends ChangeNotifier {
   @override
   void dispose() {
     _timer?.cancel();
-    _audioPlayer.dispose(); // Giải phóng bộ nhớ
+    _audioPlayer.dispose();
+    _fireworkPlayer.dispose();
     super.dispose();
   }
 }

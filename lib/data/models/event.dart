@@ -16,6 +16,7 @@ class Event {
   // Getter tính toán thời gian còn lại
   String get dayLeftDisplay {
     DateTime now = DateTime.now();
+    // bỏ phần giờ phút giây -> ta sẽ chỉ so sánh theo ngày/tháng/năm
     DateTime today = DateTime(now.year, now.month, now.day);
     DateTime target = DateTime(solarYear, solarMonth, solarDay);
 

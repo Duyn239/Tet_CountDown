@@ -17,7 +17,7 @@ class _ModernOnboardingState extends State<ModernOnboarding> {
     {
       "title": "CHÀO MỪNG ĐẾN VỚI\nTẾT COUNTDOWN",
       "subtitle": "Cùng nhau đếm ngược khoảnh khắc thiêng liêng chào đón năm mới.",
-      "image": "assets/images/hinh1.jpg",
+      "image": "assets/images/h1_new.png",
       "accentColor": const Color(0xFFC62828), // Đỏ đô
     },
     {

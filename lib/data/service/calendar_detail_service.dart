@@ -65,7 +65,7 @@ class CalendarDetailService {
       if (lDay == 23) {
         eventTitle = "Ông Công Ông Táo";
       }
-      // Kiểm tra Giao thừa: Chỉ check khi lDay từ 29 trở đi để tối ưu
+      // Kiểm tra Giao thừa
       else if (lDay >= 29) {
         DateTime tomorrow = currentDate.add(const Duration(days: 1));
         List lunarTomorrow = convertSolar2Lunar(

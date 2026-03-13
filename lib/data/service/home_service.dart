@@ -6,6 +6,7 @@ import '../../core/utils/tet_utils.dart';
 class HomeService {
   Map<String, String> calculateCountdown(DateTime now, DateTime targetDate) {
     final difference = targetDate.difference(now);
+    // Duration(days: 343, hours: 5, minutes: 11)
 
     if (difference.isNegative) {
       return {"days": "00", "hours": "00", "minutes": "00", "seconds": "00"};

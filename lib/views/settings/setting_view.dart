@@ -29,14 +29,6 @@ class SettingsView extends StatelessWidget {
                   _buildAppBar(context),
                   const SizedBox(height: 20),
 
-                  /// SettingCard(
-                  //   icon: Icons.notifications_active,
-                  //   title: "Nhắc nhở các mốc sự kiện",
-                  //   subtitle: "Thông báo sẽ được gửi lúc 08:00 sáng vào ngày có sự kiện",
-                  //   value: vm.isReminderOn,
-                  //   onChanged: (val) => vm.toggleReminder(val),
-                  // ),
-
                   ZodiacPickerCard(vm: vm, buildCommonCard: _buildCommonCardWrapper),
 
                   /// Demo Countdown
@@ -56,17 +48,6 @@ class SettingsView extends StatelessWidget {
                     onToggleEdit: (val) => vm.setEditingCountdown(val),
                   ),
 
-                  /// Demo Reminder
-                  // DemoCard(
-                  //   vm: vm,
-                  //   icon: Icons.history_toggle_off,
-                  //   title: "Chế độ Demo nhắc nhở",
-                  //   subtitle: "Thay đổi ngày có sự kiện để demo",
-                  //   value: vm.isDemoReminderOn,
-                  //   isEditing: vm.isEditingReminder, // <--- Quan trọng
-                  //   onChanged: (val) => vm.toggleDemoReminder(val),
-                  //   onToggleEdit: (val) => vm.setEditingReminder(val), // <--- Quan trọng
-                  // ),
 
                   _buildActionCard(context, vm),
                   const InfoCard(),

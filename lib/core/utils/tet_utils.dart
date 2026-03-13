@@ -1,13 +1,21 @@
 import 'package:vnlunar/vnlunar.dart';
 
 class TetUtils {
-  /// Hàm tìm ngày Dương lịch của đêm Giao thừa (29 hoặc 30 Tết)
+  /// Lấy ngày Mùng 1 năm âm lịch (lunarYear)
+  // 23:59:59 ngày 30 Tết
+  // ↓
+  // 00:00:00 mùng 1 Tết
   static DateTime getLunarNewYearEve(int year) {
     // 1. Tìm mùng 1 Tết
+    // 1/1/2026 âm = 17/02/2026 dương
+    // solarList = [day, month, year] -> vd: [17, 2, 2026]
+    // isLeap -> check tháng nhuận hay k
+    // thực tế không tồn tại tháng 1 nhuận để mà đối chiếu.
     List<int> solarList = convertLunar2Solar(1, 1, year, false, 7);
 
     // 2. Thiết lập mục tiêu là ĐÚNG 0h00 ngày Mùng 1
     // Đây chính là thời điểm kết thúc đêm Giao thừa
+    // 00:00:00 ngày mùng 1 Tết
     return DateTime(
         solarList[2], // Năm
         solarList[1], // Tháng
@@ -19,18 +27,18 @@ class TetUtils {
   /// Tự động nhảy sang năm sau nếu đã qua Tết năm nay
   static DateTime getNextTetDestination() {
     DateTime now = DateTime.now();
-
-    // Bước 1: Lấy năm âm lịch của ngày hôm nay
-    // convertSolar2Lunar trả về List<dynamic> vì phần tử cuối là bool
     List<dynamic> currentLunar = convertSolar2Lunar(now.day, now.month, now.year, 7);
     int currentLunarYear = currentLunar[2];
 
-    // Bước 2: Lấy ngày Giao thừa của năm âm lịch hiện tại
     DateTime currentYearEve = getLunarNewYearEve(currentLunarYear);
 
-    // Bước 3: So sánh
-    // Nếu hôm nay đã qua Giao thừa năm nay -> Tìm Giao thừa năm âm lịch kế tiếp
-    if (now.isAfter(currentYearEve)) {
+    // THÊM LOGIC NÀY:
+    // Nếu đang trong mùng 1, mùng 2, mùng 3 Tết thì VẪN LẤY Giao thừa năm nay làm mốc
+    // Để HomeViewModel giữ isCelebrationMode = true
+    // Giữ chế độ ăn mừng đến hết Mùng 3 (tức là bắt đầu ngày Mùng 4 thì dừng)
+    DateTime endOfCelebration = currentYearEve.add(const Duration(days: 3));
+
+    if (now.isAfter(endOfCelebration)) {
       return getLunarNewYearEve(currentLunarYear + 1);
     }
 

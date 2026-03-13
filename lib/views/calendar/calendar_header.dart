@@ -113,12 +113,16 @@ class CalendarHeader extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+
+                          // giảm tháng
                           IconButton(
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             icon: const Icon(Icons.arrow_left, color: Colors.white, size: 35),
                             onPressed: () => vm.updateMonth(-1), // Gọi hàm giảm tháng
                           ),
+
+
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Text(
@@ -126,12 +130,16 @@ class CalendarHeader extends StatelessWidget {
                               style: GoogleFonts.inter(color: Colors.white, fontSize: 20),
                             ),
                           ),
+
+                          // tăng tháng
                           IconButton(
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             icon: const Icon(Icons.arrow_right, color: Colors.white, size: 35),
                             onPressed: () => vm.updateMonth(1), // Gọi hàm tăng tháng
                           ),
+
+
                         ],
                       ),
                       GestureDetector(
