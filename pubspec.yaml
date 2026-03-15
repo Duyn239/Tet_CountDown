@@ -58,6 +58,7 @@ dependencies:
   audioplayers: ^5.2.1
 
   google_fonts: ^6.1.0
+  flip_card: ^0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +83,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/12 con giap/
     - assets/images/
     - assets/animations/
     - assets/sounds/

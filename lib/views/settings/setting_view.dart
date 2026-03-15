@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:tet_countdown_project/views/home/customs_card.dart';
 import 'package:tet_countdown_project/views/settings/widgets/info_card.dart';
 import 'package:tet_countdown_project/views/settings/widgets/zodiac_picker_card.dart';
 import '../../view_models/settings_vm.dart';
@@ -50,6 +51,8 @@ class SettingsView extends StatelessWidget {
 
 
                   _buildActionCard(context, vm),
+
+                  /// VỀ ỨNG DỤNG
                   const InfoCard(),
                   const SizedBox(height: 10),
 

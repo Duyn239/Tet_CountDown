@@ -23,7 +23,7 @@ class _ModernOnboardingState extends State<ModernOnboarding> {
     {
       "title": "MỌI TÍNH NĂNG TẾT\nTRONG TẦM TAY",
       "subtitle": "• Countdown tự động các năm\n• Xem lịch âm dương chuẩn xác\n• Theo dõi các sự kiện ngày Tết",
-      "image": "assets/images/hinh2.jpg",
+      "image": "assets/images/taoquan.png",
       "accentColor": const Color(0xFFE67E22), // Cam (hợp với rồng vàng)
     },
     {

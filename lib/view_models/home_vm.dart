@@ -99,31 +99,31 @@ class HomeViewModel extends ChangeNotifier {
     int index = settingsVM.selectedZodiacIndex;
     switch (index) {
       case 0:
-        return 'assets/images/01_ty.png';
+        return 'assets/images/12 con giap/01_ty.png';
       case 1:
-        return 'assets/images/02_suu.png';
+        return 'assets/images/12 con giap/02_suu.png';
       case 2:
-        return 'assets/images/03_dan.png';
+        return 'assets/images/12 con giap/03_dan.png';
       case 3:
-        return 'assets/images/04_meo.png';
+        return 'assets/images/12 con giap/04_meo.png';
       case 4:
-        return 'assets/images/05_rong.png';
+        return 'assets/images/12 con giap/05_rong.png';
       case 5:
-        return 'assets/images/06_ran.png';
+        return 'assets/images/12 con giap/06_ran.png';
       case 6:
-        return 'assets/images/07_ngo.jpg';
+        return 'assets/images/12 con giap/07_ngo.jpg';
       case 7:
-        return 'assets/images/08_mui.png';
+        return 'assets/images/12 con giap/08_mui.png';
       case 8:
-        return 'assets/images/09_than.png';
+        return 'assets/images/12 con giap/09_than.png';
       case 9:
-        return 'assets/images/10_dau.png';
+        return 'assets/images/12 con giap/10_dau.png';
       case 10:
-        return 'assets/images/11_tuat.png';
+        return 'assets/images/12 con giap/11_tuat.png';
       case 11:
-        return 'assets/images/12_hoi.png';
+        return 'assets/images/12 con giap/12_hoi.png';
     }
-    return 'assets/images/01_ty.png';
+    return 'assets/images/12 con giap/01_ty.png';
   }
 
   void refreshAllData() {

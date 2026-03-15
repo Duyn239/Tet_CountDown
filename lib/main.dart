@@ -4,7 +4,8 @@ import 'package:tet_countdown_project/view_models/calendar_detail_vm.dart';
 import 'package:tet_countdown_project/view_models/home_vm.dart';
 import 'package:tet_countdown_project/view_models/settings_vm.dart';
 import 'package:tet_countdown_project/views/home/home_view.dart';
-import 'package:tet_countdown_project/views/onboarding_screen.dart'; // Duy nhớ tạo thư mục và file này nhé
+import 'package:tet_countdown_project/views/onboarding/onboarding_screen.dart';
+import 'package:tet_countdown_project/views/home/tet_custom_view.dart'; // Duy nhớ tạo thư mục và file này nhé
 
 void main() {
   runApp(
@@ -48,6 +49,7 @@ class TetCountdownApp extends StatelessWidget {
       // Định nghĩa route để từ Onboarding nhảy sang Home dễ dàng
       routes: {
         '/home': (context) => const HomeView(),
+        '/customs': (context) => const TetCustomsView(), // Thêm dòng này
       },
     );
   }
