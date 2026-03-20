@@ -1,6 +1,6 @@
 # tet_countdown_project
 
-A new Flutter project.
+A PRM course project, themed around the Lunar New Year countdown, viewing the lunar calendar, and New Year events.
 
 ## Getting Started
 
