@@ -8,7 +8,7 @@ class DemoCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool value; // Giá trị Switch
-  final bool isEditing; // Lấy từ vm.isEditingCountdown hoặc vm.isEditingReminder
+  final bool isEditing; // Lấy từ vm.isEditingCountdown
   final ValueChanged<bool> onChanged;
   final Function(bool) onToggleEdit;
 
@@ -84,7 +84,7 @@ class DemoCard extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("Đã lưu thiết lập demo thành công!", style: GoogleFonts.inter()),
-                        backgroundColor: const Color(0xFFDE3B40),
+                        backgroundColor: Colors.green,
                         behavior: SnackBarBehavior.floating,
                       ),
                     );

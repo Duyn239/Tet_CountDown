@@ -117,7 +117,7 @@ class CalendarDetailService {
   List<Event> getLunarNewYearEvents(int year) {
     List<Event> tetEvents = [];
 
-    // 1. Tính ngày Ông Táo (23 tháng Chạp năm trước đó)
+    // Tính ngày Ông Táo (23 tháng Chạp năm trước đó)
     List<int> taoQuanSolarList = convertLunar2Solar(23, 12, year - 1, false, 7);
     DateTime taoQuanDateTime = DateTime(
       taoQuanSolarList[2],
@@ -125,29 +125,24 @@ class CalendarDetailService {
       taoQuanSolarList[0],
     );
 
-    // 2. Lấy mốc Mùng 1 Tết (Do TetUtils.getLunarNewYearEve của bạn trả về 0h00 Mùng 1)
+    // Lấy mốc Mùng 1 Tết
     DateTime mung1DateTime = TetUtils.getLunarNewYearEve(year);
 
-    // 3. Tính ngày Giao Thừa bằng cách lùi lại 1 ngày từ mốc Mùng 1
+    // Tính ngày Giao Thừa
     DateTime giaoThuaDate = mung1DateTime.subtract(const Duration(days: 1));
 
-    // 4. Thêm các sự kiện vào list dựa trên mốc đã xác định lại
     _addEvent(tetEvents, "Ông Công Ông Táo", taoQuanDateTime);
-
-    // Ngày hiển thị chữ "Đêm Giao Thừa"
     _addEvent(tetEvents, "Đêm Giao Thừa", giaoThuaDate);
-
-    // Ngày hiển thị "Tết Nguyên Đán" (Chính là mốc 0h00 bạn đã lấy)
     _addEvent(tetEvents, "Tết Nguyên Đán", mung1DateTime);
 
-    // Mùng 2 = Mùng 1 + 1 ngày
+    // Mùng 2
     _addEvent(
       tetEvents,
       "Mùng 2 Tết",
       mung1DateTime.add(const Duration(days: 1)),
     );
 
-    // Mùng 3 = Mùng 1 + 2 ngày
+    // Mùng 3
     _addEvent(
       tetEvents,
       "Mùng 3 Tết",

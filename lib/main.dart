@@ -40,16 +40,13 @@ class TetCountdownApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
-        // Cấu hình font chữ Serif cho toàn app để hợp không khí Tết
         fontFamily: 'Roboto',
       ),
-      // Điều hướng ban đầu: Vào Onboarding trước
       home: const ModernOnboarding(),
 
-      // Định nghĩa route để từ Onboarding nhảy sang Home dễ dàng
       routes: {
         '/home': (context) => const HomeView(),
-        '/customs': (context) => const TetCustomsView(), // Thêm dòng này
+        '/customs': (context) => const TetCustomsView(),
       },
     );
   }

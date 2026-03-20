@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:audioplayers/audioplayers.dart'; // Thêm thư viện này
+import 'package:audioplayers/audioplayers.dart';
 import 'package:tet_countdown_project/view_models/settings_vm.dart';
 import '../data/models/calendar_day.dart';
 import '../data/service/home_service.dart';
@@ -20,7 +20,6 @@ class HomeViewModel extends ChangeNotifier {
   List<CalendarDay?> currentMonthDays = [];
   String currentMonthYearLabel = "";
 
-  // BIẾN QUAN TRỌNG: Kích hoạt pháo hoa và nhạc
   bool isCelebrationMode = false;
 
   HomeViewModel({required this.settingsVM}) {
@@ -74,7 +73,7 @@ class HomeViewModel extends ChangeNotifier {
 
   void _playNewYearMusic() async {
     try {
-      await _fireworkPlayer.setVolume(1.0); // Tiếng pháo nhỏ hơn nhạc một chút cho đỡ chói
+      await _fireworkPlayer.setVolume(1.0);
       await _fireworkPlayer.play(AssetSource('sounds/phao_hoa_sound.mp3'));
 
       // Phát nhạc Happy New Year
