@@ -50,7 +50,6 @@ class SettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // LOGIC QUAN TRỌNG: Trang Home gọi cái này để lấy ngày đích
   DateTime get effectiveTargetDate {
     if (isDemoCountdownOn && _confirmedDateTime != null) {
       // Chỉ trả về ngày Demo nếu Switch ĐANG BẬT và ĐÃ ẤN LƯU (có confirmed data)
@@ -86,8 +85,6 @@ class SettingsViewModel extends ChangeNotifier {
       _confirmedDateTime = null;
       isEditingCountdown = false;
 
-      // QUAN TRỌNG: Phải lưu ngay trạng thái OFF này xuống máy
-      // Nếu không lưu, khi khởi động lại nó sẽ lấy giá trị cũ trong Prefs
       await _settingsService.saveSettings(
         isDemoCountdownOn: false,
         demoDate: draftDate,

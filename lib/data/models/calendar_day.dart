@@ -2,10 +2,10 @@ import 'event.dart';
 
 class CalendarDay {
   final String weekday;      // Thứ trong tuần
-  final int solarDay;        // Ngày dương
-  final int lunarDay;        // Ngày âm
-  final int lunarMonth;      // Tháng âm
-  final String canchiYear;   // Năm can chi
+  final int solarDay;
+  final int lunarDay;
+  final int lunarMonth;
+  final String canchiYear;
   final bool isToday;
   final Event? event;
 

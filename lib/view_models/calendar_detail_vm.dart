@@ -31,7 +31,6 @@ class CalendarViewModel extends ChangeNotifier {
   }
 
   void _setInitialSelectedDay() {
-    final now = DateTime.now();
     _selectedDayObject = calendarDays.firstWhere(
           (d) => d != null && d.isToday,
       orElse: () => null,

@@ -64,7 +64,7 @@ class DemoCard extends StatelessWidget {
             ],
           ),
 
-          // Sử dụng isEditing từ ViewModel để quyết định ẩn hiện
+          // TH: bật switch -> hiển thị form chỉnh sửa
           if (value && isEditing) ...[
             const SizedBox(height: 20),
             const Divider(height: 1),
@@ -78,7 +78,7 @@ class DemoCard extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () async {
                   await vm.saveDemoSettings();
-                  onToggleEdit(false); // Đóng form thông qua VM
+                  onToggleEdit(false);
 
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -97,7 +97,9 @@ class DemoCard extends StatelessWidget {
                 child: Text("Lưu", style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
-          ] else if (value && !isEditing) ...[
+          ]
+
+          else if (value && !isEditing) ...[
             TextButton(
               onPressed: () => onToggleEdit(true), // Mở form thông qua VM
               child: Text(
@@ -111,7 +113,6 @@ class DemoCard extends StatelessWidget {
     );
   }
 
-  // --- Giữ nguyên các hàm _buildLeading và _buildInput của bạn ---
   Widget _buildLeading({required bool isActive}) {
     return Column(
       children: [
