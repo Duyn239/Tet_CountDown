@@ -26,7 +26,16 @@ class CalendarViewModel extends ChangeNotifier {
   }
 
   void _generateCalendar() {
+    int currentDayNumber = _selectedDayObject?.solarDay ?? 1;
     calendarDays = _detailService.getCalendarDays(_selectedYear, _selectedMonth);
+
+    _selectedDayObject = calendarDays.firstWhere(
+          (d) => d != null && d.solarDay == currentDayNumber,
+      orElse: () {
+        return calendarDays.firstWhere((d) => d != null, orElse: () => null)!;
+      },
+    );
+
     notifyListeners();
   }
 
