@@ -35,9 +35,17 @@ class Event {
     int months = target.month - today.month;
     int days = target.day - today.day;
 
+    // today = 25/03/2026
+    // target = 10/05/2027
+    /*
+        years = 1
+        months = 5 - 3 = 2
+        days = 10 - 25 = -15  ❌
+     */
     if (days < 0) {
       months -= 1;
       days += DateTime(target.year, target.month, 0).day;
+      // mượn số ngày tháng trước của target (tháng 4)
     }
     if (months < 0) {
       years -= 1;

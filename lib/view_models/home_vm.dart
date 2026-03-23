@@ -51,7 +51,6 @@ class HomeViewModel extends ChangeNotifier {
     seconds = data["seconds"]!;
 
     // 2. Logic xử lý Ăn mừng (Celebration)
-    // Nếu thời gian đã trôi qua (isAfter)
     if (now.isAfter(target)) {
       if (!isCelebrationMode) {
         isCelebrationMode = true;
