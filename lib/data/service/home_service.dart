@@ -22,21 +22,19 @@ class HomeService {
 
   /// Tính toán danh sách ngày trong tháng chuẩn lịch Việt Nam
   List<CalendarDay?> getCalendarDays(DateTime displayedMonth) {
-    // displayedMonth là tháng đang hiển thị trên lịch, không nhất thiết là "now"
     DateTime firstDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month, 1);
     DateTime lastDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month + 1, 0);
     DateTime today = DateTime.now();
 
     List<CalendarDay?> daysList = [];
 
-    // 1. Padding các ô trống đầu tháng (Thứ 2 là 1, Chủ nhật là 7)
-    // Nếu muốn bắt đầu tuần từ Thứ 2:
+    // Padding các ô trống đầu tháng (Thứ 2 là 1, Chủ nhật là 7)
     int leadingEmptyDays = firstDayOfMonth.weekday - 1;
     for (int i = 0; i < leadingEmptyDays; i++) {
       daysList.add(null);
     }
 
-    // 2. Tạo danh sách CalendarDay bằng vnlunar
+    // Tạo danh sách CalendarDay
     for (int i = 1; i <= lastDayOfMonth.day; i++) {
       // convertSolar2Lunar trả về [lunarDay, lunarMonth, lunarYear, isLeap]
       List<dynamic> lunarData = convertSolar2Lunar(
@@ -47,7 +45,7 @@ class HomeService {
       );
 
       daysList.add(CalendarDay(
-        weekday: "", // Có thể bổ sung nếu UI cần
+        weekday: "",
         solarDay: i,
         lunarDay: lunarData[0], // lunarDay
         lunarMonth: lunarData[1], // lunarMonth

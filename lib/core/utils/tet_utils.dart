@@ -41,6 +41,7 @@ class TetUtils {
     const canList = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"];
     const chiList = ["Thân", "Dậu", "Tuất", "Hợi", "Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi"];
 
+    // 2020(Canh tý) 2020 % 10 = 0, 2020 % 12 = 4
     final can = canList[lunarYear % 10];
     final chi = chiList[lunarYear % 12];
 

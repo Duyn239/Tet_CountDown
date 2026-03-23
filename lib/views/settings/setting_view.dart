@@ -41,11 +41,6 @@ class SettingsView extends StatelessWidget {
                     value: vm.isDemoCountdownOn, // state của Switch.
                     isEditing: vm.isEditingCountdown, // state của form (hiện/ko)
                     onChanged: (val) => vm.toggleDemoCountdown(val),
-                    /*
-                          void onChanged(bool val) {
-                            vm.toggleDemoCountdown(val);
-                          }
-                     */
                     onToggleEdit: (val) => vm.setEditingCountdown(val),
                   ),
 

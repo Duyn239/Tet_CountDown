@@ -95,9 +95,8 @@ class SettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // HÀM LƯU: Chuyển dữ liệu từ DRAFT sang CONFIRMED
+  // Chuyển dữ liệu từ DRAFT sang CONFIRMED
   Future<void> saveDemoSettings() async {
-    // 1. Xác nhận dữ liệu chính thức từ các ô nhập liệu tạm
     _confirmedDateTime = DateTime(
       draftDate.year,
       draftDate.month,
@@ -106,14 +105,12 @@ class SettingsViewModel extends ChangeNotifier {
       draftTime.minute,
     );
 
-    // 2. Gửi dữ liệu xuống Service để lưu vào Database/Prefs
     await _settingsService.saveSettings(
       isDemoCountdownOn: isDemoCountdownOn,
       demoDate: draftDate,
       demoTime: draftTime,
     );
 
-    // 3. Thông báo cho tất cả các View (Home, Settings) cập nhật dữ liệu mới
     notifyListeners();
     print("SettingsVM: Đã xác nhận và lưu dữ liệu Demo!");
   }
@@ -153,10 +150,8 @@ class SettingsViewModel extends ChangeNotifier {
   void updateZodiac(int index) async {
     selectedZodiacIndex = index;
 
-    // Lưu vào SharedPreferences thông qua Service
     await _settingsService.saveZodiacIndex(index);
 
-    // Thông báo cho UI (đặc biệt là trang Home) thay đổi ảnh nền ngay
     notifyListeners();
     print("SettingsVM: Đã lưu con giáp index: $index");
   }
